@@ -2740,28 +2740,6 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
                         didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
         channelDelegate?.onDidReceiveServerRedirectForProvisionalNavigation()
     }
-        
-    public func webViewDidClose(_ webView: WKWebView) {
-        channelDelegate?.onCloseWindow()
-    }
-
-    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        channelDelegate?.onWebContentProcessDidTerminate()
-    }
-
-    public func webView(
-    _ webView: WKWebView,
-    didCommit navigation: WKNavigation!
-    ) {
-        channelDelegate?.onPageCommitVisible(url: url?.absoluteString)
-    }
-
-    public func webView(
-    _ webView: WKWebView,
-    didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!
-    ) {
-        channelDelegate?.onDidReceiveServerRedirectForProvisionalNavigation()
-    }
 
     //    @available(iOS 13.0, *)
     //    public func webView(_ webView: WKWebView,
