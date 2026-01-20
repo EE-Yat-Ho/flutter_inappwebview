@@ -2710,44 +2710,48 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
         }
     }
     
-    public func webViewDidClose(_ webView: WKWebView) {
-        channelDelegate?.onCloseWindow()
-    }
-    
-    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        channelDelegate?.onWebContentProcessDidTerminate()
-    }
-    
-    public func webView(_ webView: WKWebView,
-                        didCommit navigation: WKNavigation!) {
-        channelDelegate?.onPageCommitVisible(url: url?.absoluteString)
-    }
-    
-    public func webView(_ webView: WKWebView,
-                        didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
-        channelDelegate?.onDidReceiveServerRedirectForProvisionalNavigation()
-    }
-    
-//    @available(iOS 13.0, *)
-//    public func webView(_ webView: WKWebView,
-//                        contextMenuConfigurationForElement elementInfo: WKContextMenuElementInfo,
-//                        completionHandler: @escaping (UIContextMenuConfiguration?) -> Void) {
-//        print("contextMenuConfigurationForElement")
-//        let actionProvider: UIContextMenuActionProvider = { _ in
-//            let editMenu = UIMenu(title: "Edit...", children: [
-//                UIAction(title: "Copy") { action in
-//
-//                },
-//                UIAction(title: "Duplicate") { action in
-//
-//                }
-//            ])
-//            return UIMenu(title: "Title", children: [
-//                UIAction(title: "Share") { action in
-//
-//                },
-//                editMenu
-//            ])
+public func webViewDidClose(_ webView: WKWebView) {
+    channelDelegate?.onCloseWindow()
+  }
+
+  public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+    channelDelegate?.onWebContentProcessDidTerminate()
+  }
+
+  public func webView(
+    _ webView: WKWebView,
+    didCommit navigation: WKNavigation!
+  ) {
+    channelDelegate?.onPageCommitVisible(url: url?.absoluteString)
+  }
+
+  public func webView(
+    _ webView: WKWebView,
+    didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!
+  ) {
+    channelDelegate?.onDidReceiveServerRedirectForProvisionalNavigation()
+  }
+
+  //    @available(iOS 13.0, *)
+  //    public func webView(_ webView: WKWebView,
+  //                        contextMenuConfigurationForElement elementInfo: WKContextMenuElementInfo,
+  //                        completionHandler: @escaping (UIContextMenuConfiguration?) -> Void) {
+  //        print("contextMenuConfigurationForElement")
+  //        let actionProvider: UIContextMenuActionProvider = { _ in
+  //            let editMenu = UIMenu(title: "Edit...", children: [
+  //                UIAction(title: "Copy") { action in
+  //
+  //                },
+  //                UIAction(title: "Duplicate") { action in
+  //
+  //                }
+  //            ])
+  //            return UIMenu(title: "Title", children: [
+  //                UIAction(title: "Share") { action in
+  //
+  //                },
+  //                editMenu
+  //            ])
 //        }
 //        let contextMenuConfiguration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: actionProvider)
 //        //completionHandler(contextMenuConfiguration)
