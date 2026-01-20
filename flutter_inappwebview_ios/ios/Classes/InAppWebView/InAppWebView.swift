@@ -2722,7 +2722,7 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
         guard let settings = settings,
               settings.useOnShowFileChooser,
               let channelDelegate = channelDelegate else {
-            completionHandler(nil)
+            super.webView(webView, runOpenPanelWith: parameters, initiatedByFrame: frame, completionHandler: completionHandler)
             return
         }
         
