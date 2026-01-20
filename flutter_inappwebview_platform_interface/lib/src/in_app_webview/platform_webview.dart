@@ -1907,6 +1907,12 @@ In that case, after the `window.addEventListener("flutterInAppWebViewPlatformRea
       apiUrl:
           'https://developer.android.com/reference/android/webkit/WebChromeClient#onShowFileChooser(android.webkit.WebView,%20android.webkit.ValueCallback%3Candroid.net.Uri[]%3E,%20android.webkit.WebChromeClient.FileChooserParams)',
     ),
+    IOSPlatform(
+      available: '18.0',
+      apiName: 'WKUIDelegate.webView',
+      apiUrl:
+          'https://developer.apple.com/documentation/webkit/wkuidelegate/4244751-webview',
+    ),
   ])
   final FutureOr<ShowFileChooserResponse?> Function(
       T controller, ShowFileChooserRequest request)? onShowFileChooser;

@@ -2023,7 +2023,15 @@ as it can cause framerate drops on animations in Android 9 and lower (see [Hybri
   ///If the [PlatformWebViewCreationParams.onShowFileChooser] event is implemented and this value is `null`,
   ///it will be automatically inferred as `true`, otherwise, the default value is `false`.
   ///This logic will not be applied for [PlatformInAppBrowser], where you must set the value manually.
-  @SupportedPlatforms(platforms: [AndroidPlatform()])
+  @SupportedPlatforms(platforms: [
+    AndroidPlatform(),
+    IOSPlatform(
+      available: "18.0",
+      apiName: "WKUIDelegate.webView",
+      apiUrl:
+          "https://developer.apple.com/documentation/webkit/wkuidelegate/4244751-webview",
+    ),
+  ])
   bool? useOnShowFileChooser;
 
   ///Specifies a feature policy for the `<iframe>`.

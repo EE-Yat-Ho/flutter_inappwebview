@@ -2718,9 +2718,77 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
        initiatedByFrame frame: WKFrameInfo,
        completionHandler: @escaping ([URL]?) -> Void
     ) {
-       print("\(type(of: self)): \(#function)")
-       print("🖥️ runOpenPanelWith||parameters:\(parameters)")
-       completionHandler([])
+        // 설정상 onShowFileChooser를 사용하지 않거나 채널이 없으면, 파일 선택을 취소한다.
+        guard let settings = settings,
+              settings.useOnShowFileChooser,
+              let channelDelegate = channelDelegate else {
+            completionHandler(nil)
+            return
+        }
+        
+        var completionCalled = false
+        
+        let callback = WebViewChannelDelegate.ShowFileChooserCallback()
+        
+        // Flutter 쪽(onShowFileChooser)에서 응답을 정상적으로 받은 경우 처리
+        callback.nonNullSuccess = { (responseObj: Any) in
+            guard let responseMap = responseObj as? [String: Any] else {
+                // 형식을 알 수 없으면 기본 동작 수행
+                return true
+            }
+            
+            let handledByClient = responseMap["handledByClient"] as? Bool ?? false
+            if !handledByClient {
+                // 클라이언트에서 처리하지 않겠다고 한 경우 기본 동작 수행
+                return true
+            }
+            
+            completionCalled = true
+            
+            if let filePaths = responseMap["filePaths"] as? [String],
+               !filePaths.isEmpty {
+                let urls: [URL] = filePaths.compactMap { path in
+                    if let url = URL(string: path), url.scheme != nil {
+                        return url
+                    }
+                    return URL(fileURLWithPath: path)
+                }
+                completionHandler(urls)
+            } else {
+                // 파일이 없거나 취소된 경우
+                completionHandler(nil)
+            }
+            
+            // 기본 동작은 수행하지 않는다.
+            return false
+        }
+        
+        // Flutter에서 null 응답, notImplemented, 혹은 채널 에러 시 기본 동작
+        callback.defaultBehaviour = { (_: Any?) in
+            if !completionCalled {
+                // 현재는 시스템 기본 패널을 그대로 재현하지 않고,
+                // 단순히 파일 선택을 취소한 것으로 처리한다.
+                completionHandler(nil)
+            }
+        }
+        
+        callback.error = { [weak callback] (code: String, message: String?, details: Any?) in
+            print(code + ", " + (message ?? ""))
+            callback?.defaultBehaviour(nil)
+        }
+        
+        // Android의 ShowFileChooserRequest와 동일한 형태의 맵을 구성
+        // mode: 단일/다중 선택에 따라 OPEN(0) / OPEN_MULTIPLE(1)로 매핑
+        let mode = parameters.allowsMultipleSelection ? 1 : 0
+        let request: [String: Any?] = [
+            "mode": mode,
+            "acceptTypes": [],          // iOS 18의 WKOpenPanelParameters에서 세부 타입이 노출되지 않으므로 빈 배열
+            "isCaptureEnabled": false,  // 별도의 캡처 모드는 현재 사용하지 않음
+            "title": nil,
+            "filenameHint": nil
+        ]
+        
+        channelDelegate.onShowFileChooser(request: request, callback: callback)
     }
 
     public func webViewDidClose(_ webView: WKWebView) {

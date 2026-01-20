@@ -1196,6 +1196,23 @@ public class WebViewChannelDelegate: ChannelDelegate {
         channel?.invokeMethod("onDidReceiveServerRedirectForProvisionalNavigation", arguments: arguments)
     }
     
+    public class ShowFileChooserCallback: BaseCallbackResult<Any> {
+        override init() {
+            super.init()
+            self.decodeResult = { (obj: Any?) in
+                return obj
+            }
+        }
+    }
+    
+    public func onShowFileChooser(request: [String: Any?], callback: ShowFileChooserCallback) {
+        if channel == nil {
+            callback.defaultBehaviour(nil)
+            return
+        }
+        channel?.invokeMethod("onShowFileChooser", arguments: request, callback: callback)
+    }
+    
     @available(iOS 15.0, *)
     public func onCameraCaptureStateChanged(oldState: WKMediaCaptureState?, newState: WKMediaCaptureState?) {
         let arguments = [
